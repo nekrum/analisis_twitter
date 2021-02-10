@@ -39,17 +39,24 @@ corpus_carto <- Corpus(VectorSource(corpus_carto))
 
 toSpace <- content_transformer(function (x , pattern) gsub(pattern, " ", x))
 
+remueve_palabras <- c(
+  "años", "hashtag", "miprimeracoso", "topic", "first", "women", "iba", "thousands", "lugar",
+  "tuits", "h...", "twitter", "d...", "...", "vivecocafmniallday", "tweeted", "about", "gtgt",
+  "gameofthronesseasonvrrumboalcampeonatospanishgpconcachampionsenmdmarco", "against", "h...",
+  "fabi...", "n...", "“", "➡", "”", "llavesdedos…", "…", "internetimportancia", "denounce"
+)
 corpus_carto <- tm_map(corpus_carto, toSpace, "https\\S*")
 corpus_carto <- tm_map(corpus_carto, toSpace, "/")
 corpus_carto <- tm_map(corpus_carto, toSpace, "\\|")
 corpus_carto <- tm_map(corpus_carto, toSpace, "RT")
+corpus_carto <- tm_map(corpus_carto, toSpace, "…")
 corpus_carto <- tm_map(corpus_carto, toSpace, "@.*:")
 corpus_carto <- tm_map(corpus_carto, toSpace, "#MiPrimerAcoso")
 
 corpus_carto <- tm_map(corpus_carto, content_transformer(tolower))
 corpus_carto <- tm_map(corpus_carto, removeNumbers)
 corpus_carto <- tm_map(corpus_carto, removeWords, stopwords("spanish"))
-corpus_carto <- tm_map(corpus_carto, removeWords, c("años", "hashtag", "miprimeracoso"))
+corpus_carto <- tm_map(corpus_carto, removeWords, remueve_palabras)
 corpus_carto <- tm_map(corpus_carto, removePunctuation)
 corpus_carto <- tm_map(corpus_carto, stripWhitespace)
 
