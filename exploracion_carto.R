@@ -1,5 +1,6 @@
 library(readr)
 library(dplyr)
+library(lubridate)
 
 
 carto_data <- read_csv(
@@ -14,3 +15,14 @@ carto_data <- read_csv(
     cartodb_georef_status = col_skip()
   )
 )
+
+carto_data %>%
+  mutate(dia_pos = day(universal_time_stamp)) %>%
+  group_by(dia_pos) %>%
+  summarise(numero_tw = n()) %>%
+  ggplot(aes(x=dia_pos, y=numero_tw)) +
+  geom_col() +
+  labs(title="Número de pos para #Miprimeracoso")
+
+
+
