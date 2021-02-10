@@ -35,7 +35,7 @@ corpus_carto <- carto_data %>%
 
 
 corpus_carto <- Corpus(VectorSource(corpus_carto))
-inspect(corpus_carto)
+#inspect(corpus_carto)
 
 toSpace <- content_transformer(function (x , pattern) gsub(pattern, " ", x))
 
@@ -49,9 +49,17 @@ corpus_carto <- tm_map(corpus_carto, toSpace, "#MiPrimerAcoso")
 corpus_carto <- tm_map(corpus_carto, content_transformer(tolower))
 corpus_carto <- tm_map(corpus_carto, removeNumbers)
 corpus_carto <- tm_map(corpus_carto, removeWords, stopwords("spanish"))
-corpus_carto <- tm_map(corpus_carto, removeWords, c("años"))
+corpus_carto <- tm_map(corpus_carto, removeWords, c("años", "hashtag", "miprimeracoso"))
 corpus_carto <- tm_map(corpus_carto, removePunctuation)
 corpus_carto <- tm_map(corpus_carto, stripWhitespace)
 
+dtm <- TermDocumentMatrix(corpus_carto)
+m <- as.matrix(dtm)
+v <- sort(rowSums(m),decreasing=TRUE)
+d <- data.frame(word = names(v),freq=v)
+head(d, 10)
 
+set.seed(1234)
+wordcloud(words = d$word, freq = d$freq, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35)
 
