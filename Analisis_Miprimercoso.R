@@ -30,7 +30,7 @@ miprimeracoso2016_04231800_04231900 <- search_fullarchive(
 saveRDS(miprimeracoso2016_04231800_04231900, "miprimeracoso2016_04231800_04231900.rds")
 
 miprimeracoso2016_04231900_04231940 <- search_fullarchive(
-  q = "#miprimeracoso",n = 500,
+  q = "#miprimeracoso", n = 500,
   env_name = 'buscatodo',
   fromDate = "201604231900", toDate = "201604231940",
 )
@@ -113,3 +113,5 @@ all.tweets %>%
   ggplot(aes(x = day_tw, y=n)) +
   geom_line()
 
+saveRDS(all.tweets, "all_tweets.rds")
+readRDS(file.choose())
