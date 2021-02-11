@@ -10,7 +10,6 @@ miprimeracoso2016_04232000_04232020 <- search_fullarchive(
 )
 saveRDS(miprimeracoso2016_04232000_04232020, "miprimeracoso2016_04232000_04232020.rds")
 
-
 #Continuacion
 
 miprimeracoso2016_04232040_04232100 <- search_fullarchive(
