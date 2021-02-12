@@ -2,7 +2,7 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(lubridate)
-
+library(dplyr)
 
 carto_data <- read_csv(
   "table_5d787653.csv",
@@ -42,8 +42,11 @@ toSpace <- content_transformer(function (x , pattern) gsub(pattern, " ", x))
 remueve_palabras <- c(
   "años", "hashtag", "miprimeracoso", "topic", "first", "women", "iba", "thousands", "lugar",
   "tuits", "h...", "twitter", "d...", "...", "vivecocafmniallday", "tweeted", "about", "gtgt",
-  "gameofthronesseasonvrrumboalcampeonatospanishgpconcachampionsenmdmarco", "against", "h...",
-  "fabi...", "n...", "“", "➡", "”", "llavesdedos…", "…", "internetimportancia", "denounce"
+  "gameofthronesseasonvrrumboalcampeonatospanishgpconcachampionsenmdmarco", "gameofthronesseasonrumboalcampeonatospanishgpconcachampionsenmdmarco",
+  "against", "h...","vivecocafmniallday",
+  "fabi...", "n...", "“", "➡", "”", "llavesdedos…", "…", "internetimportancia", "denounce", "miles", "mientras", "luego", "leer", "historias", "cuenta", "vuelvan",
+  "decir", "chequen", "ches", "historia", "creadora", "después", "cómo", "cada", "hacer", "leyeron","narraron", "país", "sólo", "dijeron", "casi", "gran", "trending", "parte", "hacia","tenia", "haber", "acos",
+  "estalloredes", "time", "aunque", "caricaturaoyemathias", "tendencia", "unas", "catalinapordios", "tampoco", "leyendo", "solo", "cuentan", "fabi", "forma", "aquí"
 )
 corpus_carto <- tm_map(corpus_carto, toSpace, "https\\S*")
 corpus_carto <- tm_map(corpus_carto, toSpace, "/")
@@ -70,10 +73,24 @@ set.seed(1234)
 wordcloud(
   words = d$word,
   freq = d$freq,
-  min.freq = 1,
+  min.freq = 50,
   max.words=200,
   random.order=FALSE,
   rot.per=0.35,
   colors=brewer.pal(8, "PuOr")
 )
 
+## Analisis frecuencias palabras mayores a 300 repeticiones intento Daniel
+
+
+  d %>%
+  filter(d$freq > 300) %>%
+  ggplot(aes(word,freq), fill=word) + geom_col() +  
+    scale_fill_brewer(((palette = colorRampPalette(RColorBrewer::brewer.pal(11, "PuOr"))))) + 
+    coord_flip() + 
+    labs(title = "Tweets #miprimeracoso 2016") + 
+    labs(y = "Num. tweets") + 
+    labs(x= NULL) + 
+    theme_bw() 
+
+  
