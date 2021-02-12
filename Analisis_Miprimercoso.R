@@ -114,4 +114,16 @@ all.tweets %>%
   geom_line()
 
 saveRDS(all.tweets, "all_tweets.rds")
-readRDS(file.choose())
+Twetts_mi_primer_acoso <- readRDS(file.choose())
+
+##Creacion y filtrado del texto
+
+text_tweets <- select(all.tweets,text)
+
+filter_tweets <-gsub("https\\S*", "", text_tweets), 
+gsub("@\\S*", "", text_tweets),
+gsub("amp", "", text_tweets),  
+gsub("[\r\n]", "", text_tweets), 
+gsub("[[:punct:]]", "", text_tweets), 
+gsub('\\b+RT', '', text_tweets),
+gsub("@\\w+", "", text_tweets)
