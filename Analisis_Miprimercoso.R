@@ -107,6 +107,7 @@ files.rds <- list.files(path = ".", pattern = "*.rds")
 all.tweets <- lapply(files.rds, readRDS) %>% bind_rows() %>% distinct()
 
 all.tweets %>%
+  # filter(year(created_at) == '2019', month(created_at) %in% 10, day(created_at) %in% 25:30) %>%
   mutate(day_tw = date(created_at)) %>%
   group_by(day_tw) %>%
   summarise(n = n()) %>%
@@ -117,13 +118,3 @@ saveRDS(all.tweets, "all_tweets.rds")
 Twetts_mi_primer_acoso <- readRDS(file.choose())
 
 ##Creacion y filtrado del texto
-
-text_tweets <- select(all.tweets,text)
-
-filter_tweets <-gsub("https\\S*", "", text_tweets), 
-gsub("@\\S*", "", text_tweets),
-gsub("amp", "", text_tweets),  
-gsub("[\r\n]", "", text_tweets), 
-gsub("[[:punct:]]", "", text_tweets), 
-gsub('\\b+RT', '', text_tweets),
-gsub("@\\w+", "", text_tweets)
