@@ -12,6 +12,13 @@ saveRDS(miprimeracoso2016_04232000_04232020, "miprimeracoso2016_04232000_0423202
 
 #Continuacion
 
+miprimeracoso2016_04232020_04232040 <- search_fullarchive(
+  q = "#miprimeracoso",n = 500,
+  env_name = 'historicotweet',
+  fromDate = "201604232020", toDate = "201604232040"
+)
+saveRDS(miprimeracoso2016_04232020_04232040, "miprimeracoso2016_04232000_04232020.rds")
+
 miprimeracoso2016_04232040_04232100 <- search_fullarchive(
   q = "#miprimeracoso",n = 500,
   env_name = 'historicotweet',
