@@ -1,14 +1,30 @@
+#library(readr)
+#library(dplyr)
+#library(ggplot2)
+#library(lubridate)
+
+#library(tm)
+#library(SnowballC)
+#library(wordcloud)
+#library(RColorBrewer)
+#library(dplyr)
+#library(tidytext)
+
 library(readr)
 library(dplyr)
 library(ggplot2)
 library(lubridate)
 
-#library(tm)
-#library(SnowballC)
+library(tm)
+#library(NPL)
+library(SnowballC)
 library(wordcloud)
 library(RColorBrewer)
-#library(dplyr)
-#library(tidytext)
+library(tidytext)
+library(knitr)
+library (tidyr)
+library(plotly)
+library(hrbrthemes)
 
 
 all_tweet_text  <- all_tweets %>%
@@ -50,21 +66,21 @@ all_tweet_text <- tm_map(all_tweet_text, toSpace_2, "#MiPrimerAcoso")
 all_tweet_text <- tm_map(all_tweet_text, content_transformer(tolower))
 all_tweet_text <- tm_map(all_tweet_text, removeNumbers)
 all_tweet_text<- tm_map(all_tweet_text, removeWords, stopwords("spanish"))
-all_tweet_text <- tm_map(all_tweet_text, removeWords, remueve_palabras)
+all_tweet_text <- tm_map(all_tweet_text, removeWords, remueve_palabras_2)
 all_tweet_text <- tm_map(all_tweet_text, removePunctuation)
 all_tweet_text <- tm_map(all_tweet_text, stripWhitespace)
 
 dtm_2 <- TermDocumentMatrix(all_tweet_text)
-m_2 <- as.matrix(dtm)
-v_2 <- sort(rowSums(m),decreasing=TRUE)
-d_2016_2021 <- data.frame(word = names(v),freq=v)
-head(d, 10)
+m_2 <- as.matrix(dtm_2)
+v_2 <- sort(rowSums(m_2),decreasing=TRUE)
+d_2016_2021 <- data.frame(word = names(v_2),freq=v_2)
+head(d_2016_2021, 10)
 
 set.seed(1234)
 wordcloud(
   words = d_2016_2021$word,
   freq = d_2016_2021$freq,
-  min.freq = 200,
+  min.freq = 100,
   max.words=200,
   random.order=FALSE,
   rot.per=0.50,
