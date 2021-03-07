@@ -75,16 +75,16 @@ Positivas <- g %>%
   filter(Tipo == "Positiva") %>% 
   select(-2)
 
-wordcloud2(data=Negativas, size = 2.3, minRotation = -pi/10, maxRotation = -pi/10, rotateRatio = 10, shape = "circle")
+wordcloud2(data=Negativas, size = 2.3, minRotation = -pi/230, maxRotation = -pi/230, 
+           rotateRatio = 1, shape = "circle")
 
-wordcloud2(data=Positivas, size = 1.5, shape = "circle")
+wordcloud2(data=Positivas, size = 2.3, minRotation = -pi/230, maxRotation = -pi/230, 
+           rotateRatio = 1, shape = "circle")
 
 letterCloud( g, word = "8M", color='random-light' , backgroundColor="purpure")
 
 letterCloud( Negativas, word = "PEACE", color="white", backgroundColor="pink")
 
-wordcloud2(Negativas, figPath = "/Users/Nurin/Downloads/klipartz.com.png",
-           size = 5, color = "skyblue", backgroundColor="white")
 
 #En caso de que no corra con el WordCloud2 hacer la siguiente instalacion para 
 # desistalar y volverlo a cargar 
@@ -176,7 +176,7 @@ wordcloud2(d_2016_2021, figPath = "/Users/Nurin/Downloads/klipartz.com.png", siz
 
 wordcloud2(d_2016_2021, figPath = "/Users/Nurin/Downloads/Feminist Mouse Pads _ Zazzle.png", size = 1, color = "skyblue", backgroundColor="green")
 
-wordcloud2(d_2016_2021, figPath = "/Users/Nurin/Downloads/acoso_3.png", size = 1, color = "black", backgroundColor="white")
+wordcloud2(d_2016_2021, figPath = "/Users/Nurin/Downloads/acoso_3.png", size = .5, color = "black", backgroundColor="white")
 
 
 
