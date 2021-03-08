@@ -1,0 +1,208 @@
+---
+title: "Análisis del hashtag #MiPrimerAcoso"
+author: "Bianca Pérez, Scarlett Escudero y Daniel Atilano"
+date: "7/3/2021"
+output: html_document
+---
+
+## Introducción 
+
+En el marco del 8 de marzo, Día de la Mujer, se conmemora la lucha que han tenido las mujeres a lo largo de los siglos en todo el mundo. En esta fecha recordamos a todas las mujeres asesinadas, violentadas, acosadas, discriminadas, excluidas y silenciadas. Sin duda las redes sociales son una herramienta de gran alcance para compartir nuestras historias, entre ellas las de acoso. 
+En abril de 2016, surgió una iniciativa en Twitter llamada #MiPrimerAcoso que dio a conocer los testimonios de miles de mujeres sobre sus primeras agresiones sexuales, convirtiéndose en tendencia en cuestión de horas en México y buena parte de América Latina. Esta tendencia en Twitter (que también se difundió en otras redes sociales) mostró una realidad alarmante: que la mayoría de las primeras experiencias de acoso suceden cuando son menores de edad y varios son abusos sexuales que tipifican como delito.
+En un país donde diariamente 11 mujeres son víctimas de feminicidio, donde un tercio de las mujeres  reportan haber vivido una situación de acoso sexual, y donde el 99.7% de los delitos de violencia sexual contra mujeres no son denunciados o quedan impunes, las redes sociales son un espacio político y para alzar la voz.
+En este análisis recopilamos tweets relacionados con el #MiPrimerAcoso y realizamos un análisis de sentimientos y de frecuencia de palabras más repetidas. Este proyecto nació del interés en analizar datos generados en redes sociales en un curso intersemestral de "Ciencia de datos con perspectiva de género" de la Facultad de Psicología de la UNAM. 
+
+
+## Metodología
+
+Recopilamos de la red social Twitter en total 13,250 tweets que abarcan de los años 2016 a 2020 que contenían el hashtag #MiPrimerAcoso. Para realizar el análisis de sentimientos utilizamos el diccionario de  14 mil palabras en español que proponen Stadthagen-Gonzalez, Imbault, Pérez y Brysbaert (2017) que incluyen su valencia (con puntaje de 1 a 9) y nivel de arousal (con puntaje de 1 a 9). Omitimos las palabras con valencia neutra (que abarcan un puntaje de 4 a 6) y clasificamos las valencias de 1 a 3.9 como palabras negativas y las valencias de 6.1 a 9 como palabras positivas. 
+
+
+## Resultados
+
+
+```{r, include=FALSE}
+#Cargar librerías y datos
+library(tidyverse)
+library(tidytext)
+library(tm)
+library(lubridate)
+library(zoo)
+library(scales)
+library(wordcloud2)
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(tm)
+library(SnowballC)
+library(RColorBrewer)
+library(tidytext)
+library(knitr)
+library (tidyr)
+library(plotly)
+library(hrbrthemes)
+
+all_tweets
+
+ 
+diccionario<- read.csv("C:/Users/scarl/Downloads/13428_2015_700_MOESM1_ESM.csv")
+ 
+diccionario_fil <- diccionario %>% 
+  filter(!between(ValenceMean,4,6.07))
+
+tuits_diccionario <- 
+  all_tweets %>%
+  unnest_tokens(input = "text", output = "Word") %>%
+  inner_join(diccionario_fil, ., by = "Word") %>%
+  mutate(Tipo = ifelse( ValenceMean > 5 , "Positiva", "Negativa"))
+```
+
+### Frecuencia de palabras repetidas dentro del tweet
+
+```{r}
+g <- tuits_diccionario %>%
+  count(Word, Tipo, sort = TRUE) %>%
+  ungroup()
+
+
+g %>%
+  group_by(Tipo) %>%
+  top_n(20) %>%
+  ungroup() %>%
+  mutate(Word = reorder(Word, n)) %>%
+  ggplot(aes(n, Word, fill = Tipo)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~Tipo, scales = "free_y") +
+  labs(x = "Contribución al sentimiento",
+       y = NULL)
+
+
+```
+
+### Nube de palabras general
+
+```{r, include=FALSE}
+#Alistar datos
+
+all_tweet_text  <- all_tweets %>%
+  select(text) %>%
+  pull()
+
+
+Analisis_T <- reads.rds
+
+data_frame(all_tweets)
+
+files.rds <- list.files(path = ".", pattern = "*.rds")
+
+all_tweets <- lapply(files.rds, readRDS) %>% bind_rows() %>% distinct()
+
+all_tweet_text <- Corpus(VectorSource(all_tweet_text))
+
+
+toSpace_2 <- content_transformer(function (x , pattern) gsub(pattern, " ", x))
+
+remueve_palabras_2 <- c("años", "hashtag", "miprimeracoso", "topic", "first", "women", "iba", "thousands", "lugar",
+                        "tuits", "h...", "twitter", "d...",  "vivecocafmniallday", "tweeted", "about", "gtgt",
+                        "gameofthronesseasonvrrumboalcampeonatospanishgpconcachampionsenmdmarco", 
+                        "gameofthronesseasonrumboalcampeonatospanishgpconcachampionsenmdmarco",
+                        "against", "h...","vivecocafmniallday",
+                        "fabi...", "n...", "llavesdedos.", "internetimportancia", "denounce", "miles", 
+                        "mientras", "luego", "leer", "historias", "cuenta", "vuelvan",
+                        "decir", "chequen", "ches", "historia", "creadora", "después", "cómo", "cada", "hacer", 
+                        "leyeron","narraron", "país", "sólo", "dijeron", "casi", "gran", "trending", 
+                        "parte", "hacia","tenia", "haber", "acos",
+                        "estalloredes", "time", "aunque", "caricaturaoyemathias", 
+                        "tendencia", "unas", "catalinapordios", "tampoco", "leyendo", "solo", "cuentan", 
+                        "fabi", "forma", "aqu?", "campaña","decía", "denunciamejor", "númeroprimera","primeravioletagobiernocdmx",
+                        "siganvenga", "primera","primer","hechi","debate","ahora", "respecto", "nadie",
+                        "encedi?", "muchas","bien","corresistas", "narrada", "nunca", "elfraude","bajo","importante", "casa",
+                        "lafarsa", "entrampada","usando", "abusos", "menos", "culpa","edad",
+                        "forman","siento","ámbito","cuándo","escapabapresunto","promedio","frente",
+                        "peor", "ma?ana", "fuerte","pueden","rapasucia", "cuentanos","mira", "sufrido","trascendiómujer",
+                        "media","ecuador","usar","episodiowarmis", "cosas","acosaron","metío","imagínate",
+                        "sino", "proceso","tener","deberían", "toda", "pase","hombre","números","corresistas",
+                        "movimientosevidenciadom?xico","enportada","simematanmetoomx","ropasucia",
+                        "edades","cambiar","contamospodría","recuerdas","completo",
+                        "ejercicio","puede","comienzan", "calle","casos","escale", "alguna","pensar",
+                        "yotambien","pasó","personalhospital","favor","acosadas","mayoría", "dhdesarrollolocal",
+                        "elfestortura","ellasdeciden","seguir","tema","sexuales","minutos","todavía",
+                        "vivió", "arrojó","edad","mismo", "salgan","inaceptablesindignasabusosigamos","paso", "sucedió", 
+                        "criaronideatrapos","lavan","bolivianas", "empiezo","acosada","darse",
+                        "hablan", "hacemos","rabia","mucha","primero","sociales","agarró","alguien",
+                        "exposicion", "veces","adultos","gigante", "impresionanteiniciativapoder",
+                        "llevar", "provoca","quiero","tiempo","used","contexto","felicitaciones"
+)
+
+all_tweet_text <- tm_map(all_tweet_text, toSpace_2, "https\\S*")
+all_tweet_text <- tm_map(all_tweet_text, toSpace_2, "/")
+all_tweet_text <- tm_map(all_tweet_text, toSpace_2, "\\|")
+all_tweet_text <- tm_map(all_tweet_text, toSpace_2, "RT")
+all_tweet_text <- tm_map(all_tweet_text, toSpace_2, "…")
+all_tweet_text <- tm_map(all_tweet_text, toSpace_2, "@.*:")
+all_tweet_text <- tm_map(all_tweet_text, toSpace_2, "#MiPrimerAcoso")
+
+all_tweet_text <- tm_map(all_tweet_text, content_transformer(tolower))
+all_tweet_text <- tm_map(all_tweet_text, removeNumbers)
+all_tweet_text<- tm_map(all_tweet_text, removeWords, stopwords("spanish"))
+all_tweet_text <- tm_map(all_tweet_text, removeWords, remueve_palabras)
+all_tweet_text <- tm_map(all_tweet_text, removePunctuation)
+all_tweet_text <- tm_map(all_tweet_text, stripWhitespace)
+
+dtm_2 <- TermDocumentMatrix(all_tweet_text)
+m_2 <- as.matrix(dtm_2)
+v_2 <- sort(rowSums(m_2),decreasing=TRUE)
+d_2016_2021 <- data.frame(word = names(v_2),freq=v_2)
+
+Negativas <- g %>% 
+  filter(Tipo == "Negativa") %>% 
+  select(-2)
+
+
+g_2 <- tuits_diccionario %>%
+  count(Word, Tipo, sort = TRUE) %>%
+  ungroup()
+
+Positivas <- g %>% 
+  filter(Tipo == "Positiva") %>% 
+  select(-2)
+
+```
+
+```{r}
+wordcloud2(d_2016_2021, figPath = "C:/Users/scarl/Desktop/analisis_twitter/Feminist Mouse Pads _ Zazzle.png", size = 1, color = "skyblue", backgroundColor="green")
+
+```
+
+### Nube de palabras por sentimiento
+```{r}
+wordcloud2(data=Negativas, size = 2.3, minRotation = -pi/230, maxRotation = -pi/230, 
+           rotateRatio = 1, shape = "circle")
+
+```
+```{r}
+wordcloud2(data=Positivas, size = 2.3, minRotation = -pi/230, maxRotation = -pi/230, 
+           rotateRatio = 1, shape = "circle")
+```
+
+
+## Conclusiones
+Si bien el análisis de sentimientos es una herramienta muy poderosa para encontrar las emociones subyacentes a ciertos textos, posee ciertas limitaciones. Algunas palabras categorizadas como positivas pareciera que deberían estar en las negativas y viceversa. Esto es común en este análisis porque la forma en que fue asignada su valencia fue de una forma descontextualizada y cuando se trata de textos con un sentido más elaborado puede ser difícil su interpretación. 
+Podemos ver palabras con sentimiento positivo como: "sexual", que alude a un acoso o violencia sexual y que en este contexto no es para nada positivo; "niña", que alude posiblemente a que el primer acoso lo sufrieron aún siendo niñas; "calle", que probablemente fue el lugar donde ocurrió este primer acoso relatado; "hombre" siendo el victimario; y "pene" que en este contexto no es una palabra agradable. Estos son algunos ejemplos de palabras que parece contradictorio que estén categorizadas como positivas y podría deberse a que no está siendo tomado el contexto. 
+Del lado de las palabras con sentimiento negativo encontramos como las más mencionadas por las mujeres: "violencia" y "abuso", lo cual es preocupante porque podría significar que su primera experiencia de acoso fue una situación violenta y de abuso (posiblemente sexual por ser la cuarta palabra más repetida pero categorizada como positiva). También se encuentran los sentimientos de "vergüenza", "miedo" y "triste". Parece curioso el hecho de que estén las palabras "gobierno", "autoridad" y "cárcel", al referirse a instituciones de autoridad como relacionadas con este hastag.
+Una mejora que podría tener este análisis es con otra herramienta de clasificación de palabras, en vez de diccionarios, como el procesamiento natural del lenguaje usando machine learning u otras estrategias para que tengan más contexto los tweets analizados.
+
+**Ser mujer es estar en peligro desde la niñez.** 
+
+
+## Referencias
+
+Distintas Latitudes. (24/05/2016). #MiPrimerAcoso: la etiqueta que destapó la cloaca de las agresiones sexuales. *Distintas Latitudes*. Recuperado de https://distintaslatitudes.net/historias/reportaje/miprimeracoso-la-etiqueta-que-destapo-la-cloaca-de-las-agresiones-sexuales
+
+Expansión Política. (22/01/2020). *El 99.7% de los delitos de violencia sexual contra mujeres no se denuncia*. Expansión Política. Recuperado de https://politica.expansion.mx/mexico/2020/01/22/el-99-7-de-los-delitos-de-violencia-sexual-contra-mujeres-no-se-denuncia 
+
+Forbes. (16/01/2020). 3 de cada 10 mexicanas padecieron violencia sexual en segunda mitad de 2019. *Forbes*. Recuperado de https://www.forbes.com.mx/3-de-cada-10-mexicanas-padecieron-violencia-sexual-en-la-segunda-mitad-de-2019/
+
+Stadthagen-Gonzalez,H., Imbault, C., Pérez Sánchez, M. A. & Brysbaert, M. (2017). Norms of valence and arousal for 14,031 Spanish words. *Behavior Research Methods, 49*, 111–123.
+
